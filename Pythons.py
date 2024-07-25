@@ -8,7 +8,7 @@ def consultar_gemini(prompt):
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
-    # Substitua 'us-central1' pela região correta e 'model_id' pelo ID correto do seu modelo
+    # Substitua 'model_id' pelo ID correto do seu modelo
     url = "https://aiplatform.googleapis.com/v1/projects/297539322373/locations/us-central1/models/{model_id}:predict"
     
     headers = {
@@ -24,12 +24,18 @@ def consultar_gemini(prompt):
         print(f"Enviando requisição para: {url}")  # Adiciona uma mensagem de diagnóstico
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
-        print(f"Status Code: {response.status_code}")  # Adiciona uma mensagem de diagnóstico
-        return response.json().get("predictions", [{}])[0].get("content", "Resposta não encontrada.")
+        
+        # Verifica se o conteúdo da resposta é JSON
+        try:
+            response_json = response.json()
+            print(f"Status Code: {response.status_code}")  # Adiciona uma mensagem de diagnóstico
+            return response_json.get("predictions", [{}])[0].get("content", "Resposta não encontrada.")
+        except json.JSONDecodeError:
+            print("Erro ao decodificar a resposta. A resposta não é JSON ou está vazia.")
+            print(f"Conteúdo da resposta: {response.text}")
     except requests.exceptions.HTTPError as errh:
-        response_json = response.json()
-        error_message = response_json.get("error", {}).get("message", str(errh))
-        print(f"HTTP Error: {errh} - {error_message}")
+        response_text = response.text
+        print(f"HTTP Error: {errh} - Conteúdo da resposta: {response_text}")
     except requests.exceptions.ConnectionError as errc:
         print(f"Error Connecting: {errc}")
     except requests.exceptions.Timeout as errt:
