@@ -8,20 +8,24 @@ def consultar_gemini(prompt):
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
-    url = "https://297539322373.googleapis.com/v1/models/text-bison:generateText"  # Substitua pelo URL correto da API Gemini
+    # URL do endpoint para o Google Cloud AI Platform
+    url = "https://aiplatform.googleapis.com/v1/projects/297539322373/locations/us-central1/models/Generative_Language_Client:predict"
+    
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
     }
+    
     data = {
-        "prompt": prompt,
+        "instances": [{"prompt": prompt}]  # Dados de entrada para o modelo
     }
+    
     try:
         print(f"Enviando requisição para: {url}")  # Adiciona uma mensagem de diagnóstico
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
         print(f"Status Code: {response.status_code}")  # Adiciona uma mensagem de diagnóstico
-        return response.json().get("response", "Resposta não encontrada.")
+        return response.json().get("predictions", [{}])[0].get("content", "Resposta não encontrada.")
     except requests.exceptions.HTTPError as errh:
         print(f"HTTP Error: {errh}")
     except requests.exceptions.ConnectionError as errc:
