@@ -1,1 +1,22 @@
+name: Corinthians Manual
 
+on:
+  workflow_dispatch:  # Manually trigger the workflow
+
+jobs:
+  run_python_script:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  # Specify the Python version you want to use
+
+    - name: Install dependencies
+      run: pip install requests  # Instale as dependências necessárias
+
+    - name: Run script
+      run: python Pythons.py  # Rode o script Python
