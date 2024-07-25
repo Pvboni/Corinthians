@@ -8,8 +8,9 @@ def consultar_gemini(prompt):
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
-    # Substitua 'model_id' pelo ID correto do seu modelo
-    url = "https://aiplatform.googleapis.com/v1/projects/297539322373/locations/us-central1/models/{model_id}:predict"
+    model_id = "Generative_Language_Client"  # ID do modelo
+    project_id = "297539322373"  # Número do projeto
+    url = f"https://aiplatform.googleapis.com/v1/projects/{project_id}/locations/us-central1/models/{model_id}:predict"
     
     headers = {
         "Content-Type": "application/json",
