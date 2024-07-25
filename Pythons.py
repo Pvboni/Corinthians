@@ -3,6 +3,7 @@ import json
 import os
 
 def consultar_gemini(prompt):
+    """Envia uma consulta ao modelo Gemini e retorna a resposta."""
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
@@ -13,32 +14,38 @@ def consultar_gemini(prompt):
         "Authorization": f"Bearer {api_key}"
     }
     data = json.dumps({
-        "instances": [
-            {"content": prompt}
-        ]
+        "prompt": prompt,
+        # Outros parâmetros específicos do modelo, se necessário
     })
-
+    
+    print(f"Enviando requisição para: {url}")  # Mensagem de depuração
     try:
         response = requests.post(url, headers=headers, data=data)
-        response.raise_for_status()
-        response_json = response.json()
-        return response_json.get("predictions", [{}])[0].get("content", "Resposta não encontrada.")
+        response.raise_for_status()  # Verifica se houve um erro HTTP
     except requests.exceptions.HTTPError as errh:
-        response_json = response.json()
-        error_message = response_json.get("error", {}).get("message")
-        print(f"HTTP Error: {errh} - {error_message}")
-        return "Erro ao consultar o modelo."
+        print(f"HTTP Error: {errh}")
+        print(f"Conteúdo da resposta: {response.text}")
+        raise
     except requests.exceptions.RequestException as err:
-        print(f"Error: {err}")
-        return "Erro ao consultar o modelo."
-    except json.decoder.JSONDecodeError:
-        print("Erro ao decodificar a resposta JSON.")
-        return "Erro ao consultar o modelo."
+        print(f"Erro ao fazer a requisição: {err}")
+        raise
+    
+    try:
+        response_json = response.json()
+    except json.JSONDecodeError as e:
+        print(f"Erro ao decodificar o JSON: {e}")
+        print(f"Conteúdo da resposta: {response.text}")
+        raise
+    
+    return response_json.get("response", "Resposta não encontrada")  # Adapte conforme a estrutura da resposta do Gemini
 
 def main():
     prompt = "Onde posso assistir ao jogo do Corinthians hoje?"
-    resposta = consultar_gemini(prompt)
-    print(resposta)
+    try:
+        resposta = consultar_gemini(prompt)
+        print(resposta)
+    except Exception as e:
+        print(f"Erro na consulta ao modelo Gemini: {e}")
 
 if __name__ == "__main__":
     main()
