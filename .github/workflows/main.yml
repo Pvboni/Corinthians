@@ -1,25 +1,26 @@
-name: Corinthians Manual
+name: Run Gemini Script
 
 on:
-  workflow_dispatch:  # Manually trigger the workflow
+  workflow_dispatch:  # Permite executar o workflow manualmente
 
 jobs:
-  run_python_script:
+  run_gemini_script:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # Atualize para a versão mais recente
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v4  # Atualize para a versão mais recente
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Specify the Python version you want to use
+        python-version: '3.9'
 
     - name: Install dependencies
-      run: pip install requests  # Instale as dependências necessárias
-
-    - name: List files in the repository
-      run: ls -la  # Exibir os arquivos no diretório atual para verificar se o Pythons.py está presente
+      run: pip install requests
 
     - name: Run script
-      run: python Pythons.py  # Rode o script Python
+      env:
+        API_KEY: ${{ secrets.GEMINI_API_KEY }}  # Referencia o segredo armazenado no GitHub
+      run: |
+        python Pythons.py
