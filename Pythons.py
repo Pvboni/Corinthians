@@ -8,7 +8,7 @@ def consultar_gemini(prompt):
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
-    url = "https://api.gemini.example.com/v1/getTransmissionInfo"  # Substitua pelo URL correto da API Gemini
+    url = "https://297539322373.googleapis.com/v1/models/text-bison:generateText"  # Substitua pelo URL correto da API Gemini
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
