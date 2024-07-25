@@ -4,7 +4,7 @@ import json
 
 def consultar_gemini(prompt):
     """Envia uma consulta ao modelo Gemini e retorna a resposta."""
-    api_key = os.getenv('API_KEY')  # Obtém a chave da API a partir da variável de ambiente
+    api_key = os.getenv('GEMINI_API_KEY')  # Obtém a chave da API a partir da variável de ambiente
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
