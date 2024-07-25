@@ -8,15 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Atualize para a versão mais recente
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4  # Atualize para a versão mais recente
       with:
         python-version: '3.9'  # Specify the Python version you want to use
 
     - name: Install dependencies
       run: pip install requests  # Instale as dependências necessárias
+
+    - name: List files in the repository
+      run: ls -la  # Exibir os arquivos no diretório atual para verificar se o Pythons.py está presente
 
     - name: Run script
       run: python Pythons.py  # Rode o script Python
