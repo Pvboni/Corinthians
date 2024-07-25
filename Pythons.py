@@ -8,8 +8,8 @@ def consultar_gemini(prompt):
     if not api_key:
         raise ValueError("A chave da API não está configurada.")
     
-    # URL do endpoint para o Google Cloud AI Platform
-    url = "https://aiplatform.googleapis.com/v1/projects/297539322373/locations/us-central1/models/Generative_Language_Client:predict"
+    # Substitua 'us-central1' pela região correta e 'model_id' pelo ID correto do seu modelo
+    url = "https://aiplatform.googleapis.com/v1/projects/297539322373/locations/us-central1/models/{model_id}:predict"
     
     headers = {
         "Content-Type": "application/json",
@@ -27,7 +27,9 @@ def consultar_gemini(prompt):
         print(f"Status Code: {response.status_code}")  # Adiciona uma mensagem de diagnóstico
         return response.json().get("predictions", [{}])[0].get("content", "Resposta não encontrada.")
     except requests.exceptions.HTTPError as errh:
-        print(f"HTTP Error: {errh}")
+        response_json = response.json()
+        error_message = response_json.get("error", {}).get("message", str(errh))
+        print(f"HTTP Error: {errh} - {error_message}")
     except requests.exceptions.ConnectionError as errc:
         print(f"Error Connecting: {errc}")
     except requests.exceptions.Timeout as errt:
