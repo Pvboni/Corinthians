@@ -15,13 +15,12 @@ def consultar_gemini(prompt):
     }
     data = {
         "prompt": prompt,
-        # Adicione outros parâmetros como necessário
-        # "temperature": 0.7,
-        # "maxTokens": 150,
     }
     try:
+        print(f"Enviando requisição para: {url}")  # Adiciona uma mensagem de diagnóstico
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
+        print(f"Status Code: {response.status_code}")  # Adiciona uma mensagem de diagnóstico
         return response.json().get("response", "Resposta não encontrada.")
     except requests.exceptions.HTTPError as errh:
         print(f"HTTP Error: {errh}")
