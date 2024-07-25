@@ -1,34 +1,27 @@
 import requests
 
-# Função para perguntar sobre a transmissão do jogo
 def get_game_transmission_info():
-    # URL do endpoint da API do Gemini (exemplo fictício)
+    print("Starting to fetch transmission info...")
     api_url = "https://api.gemini.example.com/getTransmissionInfo"
-    
-    # Parâmetros da requisição
     params = {
         'team': 'Corinthians',
         'type': 'transmission'
     }
-    
-    # Chave de API (se necessário)
     headers = {
-        'Authorization': 'Bearer YOUR_API_KEY'
+        'Authorization': 'Bearer YOUR_API_KEY'  # Substitua pela sua chave de API real
     }
-    
-    # Fazer a requisição para a API
     response = requests.get(api_url, params=params, headers=headers)
-    
-    # Verificar se a resposta foi bem-sucedida
     if response.status_code == 200:
-        # Processar e retornar a informação
         data = response.json()
-        return data['transmissionInfo']
+        print(f"Transmission Info: {data.get('transmissionInfo', 'No info found')}")
+        return data.get('transmissionInfo', 'No info found')
     else:
-        # Tratar erro
+        print(f"Failed to fetch data: {response.status_code}")
         return "Não foi possível obter as informações de transmissão."
 
-# Função chamada ao clicar no botão
 def on_button_click():
     info = get_game_transmission_info()
-    print(info)  # Ou qualquer outra ação que você queira realizar
+    print(info)
+
+if __name__ == "__main__":
+    on_button_click()
