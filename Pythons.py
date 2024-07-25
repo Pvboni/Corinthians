@@ -1,27 +1,38 @@
 import requests
+import json
 
-def get_game_transmission_info():
-    print("Starting to fetch transmission info...")
-    api_url = "https://api.gemini.example.com/getTransmissionInfo"
-    params = {
-        'team': 'Corinthians',
-        'type': 'transmission'
-    }
+def consultar_gemini(prompt, api_key):
+    """Envia uma consulta ao modelo Gemini e retorna a resposta."""
+    url = "https://language.googleapis.com/v1/models/YOUR_MODEL:generateText"  # Substitua YOUR_MODEL pelo nome do seu modelo Gemini
     headers = {
-        'Authorization': 'Bearer YOUR_API_KEY'  # Substitua pela sua chave de API real
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + api_key
     }
-    response = requests.get(api_url, params=params, headers=headers)
-    if response.status_code == 200:
-        data = response.json()
-        print(f"Transmission Info: {data.get('transmissionInfo', 'No info found')}")
-        return data.get('transmissionInfo', 'No info found')
-    else:
-        print(f"Failed to fetch data: {response.status_code}")
-        return "Não foi possível obter as informações de transmissão."
+    data = {
+        "prompt": prompt,
+        # Adicione outros parâmetros como necessário, por exemplo:
+        # "temperature": 0.7,
+        # "maxTokens": 150,
+    }
+    try:
+        response = requests.post(url, headers=headers, json=data)
+        response.raise_for_status()  # Verifica se ocorreu algum erro na requisição
+        return response.json().get("response", "Resposta não encontrada.")  # Adapte conforme a estrutura da resposta
+    except requests.exceptions.HTTPError as errh:
+        print(f"HTTP Error: {errh}")
+    except requests.exceptions.ConnectionError as errc:
+        print(f"Error Connecting: {errc}")
+    except requests.exceptions.Timeout as errt:
+        print(f"Timeout Error: {errt}")
+    except requests.exceptions.RequestException as err:
+        print(f"Error: {err}")
+    return "Erro na consulta ao modelo Gemini."
 
-def on_button_click():
-    info = get_game_transmission_info()
-    print(info)
+def main():
+    api_key = "sua_chave_api_do_gemini"  # Substitua pela sua chave de API real
+    prompt = "Onde posso assistir ao jogo do Corinthians hoje?"
+    resposta = consultar_gemini(prompt, api_key)
+    print(resposta)
 
 if __name__ == "__main__":
-    on_button_click()
+    main()
